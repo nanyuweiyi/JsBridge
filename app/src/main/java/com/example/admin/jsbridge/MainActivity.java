@@ -2,7 +2,6 @@ package com.example.admin.jsbridge;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.Button;
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void handler(String data, CallBackFunction function) {
                 String str = "这是html返回给java的数据:" + data;
-                Toast.makeText(MainActivity.this, "java原生方法被调用了"+str, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "java原生方法被调用了" + str, Toast.LENGTH_LONG).show();
                 //回调返回给Js
                 function.onCallBack("web调用原生");//该参数是传递给html的
             }
@@ -62,9 +61,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         User user = new User();
         Location location = new Location();
-        location.address = "SDU";
+        location.address = "北京";
         user.location = location;
-        user.name = "大头鬼";
+        user.name = "Android";
 
         //不需要回调
         webView.callHandler("functionInJs", new Gson().toJson(user), new CallBackFunction() {
@@ -77,13 +76,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //java执行完js方法需要回调值时使用
         webView.addJavascriptInterface(new JavaScriptInterface(), "huidiao");
 
-        findViewById(R.id.button1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JsParse("hello world 111");
-            }
-        });
-
     }
 
     //java执行完js方法无回传值
@@ -92,10 +84,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    }
 
     //java执行完js方法有回传值
-    public void JsParse(String data){
+    public void JsParse(String data) {
         String url = "javascript:huidiao.startFunction(dealWithRequest('" + data + "'));";
         webView.loadUrl(url);
     }
+
     private class JavaScriptInterface {
         @JavascriptInterface
         public void startFunction(String result) {
@@ -106,15 +99,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (button.equals(v)) {
-            webView.callHandler("functionInJs", "data from Java", new CallBackFunction() {
+        switch (v.getId()){
+            case R.id.button:
+                webView.callHandler("functionInJs", "data from Java", new CallBackFunction() {
 
-                @Override
-                public void onCallBack(String data) {
-                    Log.i(TAG, "reponse data from js " + data);
-                }
+                    @Override
+                    public void onCallBack(String data) {
+                        Toast.makeText(MainActivity.this, "reponse data from js " + data, Toast.LENGTH_SHORT).show();
+                    }
 
-            });
+                });
+                break;
+            case R.id.button1:
+                JsParse("传递给js的值");
+                break;
         }
 
     }
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public void handler(String data, CallBackFunction function) {
-            if(function != null){
+            if (function != null) {
                 Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
             }
         }

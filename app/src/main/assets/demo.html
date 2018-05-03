@@ -86,7 +86,7 @@
         <!--java调用js方法-->
         function dealWithRequest(msg) {
             document.getElementById("show").innerHTML = msg;
-            return "123321";<!--回调给java-->
+            return "js回传给java的值";<!--回调给java-->
         }
 
         connectWebViewJavascriptBridge(function(bridge) {
